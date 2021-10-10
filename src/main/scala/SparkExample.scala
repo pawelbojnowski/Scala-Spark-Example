@@ -15,7 +15,10 @@ object SparkExample extends Config{
     val result = personDF.join(personDFWithRenamedColumn, Seq("phone_number"), "left")
     result.show()
 
-    sc.stop()
+
+    val personDFCockroach = loadFromCockroach("spark_scala_cockroachdb", "billing")
+    personDFCockroach.show()
+
 
   }
 

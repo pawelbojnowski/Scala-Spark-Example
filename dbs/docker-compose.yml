@@ -1,5 +1,6 @@
 version: '2.2'
 services:
+
   ScalaSparkExampleCassandra:
     image: cassandra:latest
     container_name: ScalaSparkExampleCassandra
@@ -8,11 +9,13 @@ services:
     environment:
       - "MAX_HEAP_SIZE=256M"
       - "HEAP_NEWSIZE=128M"
+      - "CASSANDRA_USER=root"
+      - "CASSANDRA_PASSWORD=root"
     restart: always
     volumes:
       - ./volumesData/cassandra_data:/var/lib/cassandra
     healthcheck:
-      test: [ "CMD", "cqlsh", "-u ScalaSparkExampleCassandra", "-p ScalaSparkExampleCassandra" ,"-e describe keyspaces" ]
+      test: [ "CMD", "cqlsh", "-u root", "-p root" ,"-e describe keyspaces" ]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -38,3 +41,21 @@ services:
       - "./init.sql:/docker-entrypoint-initdb.d/schema.sql:ro"
     ports:
       - '3306:3306'
+
+  ScalaSparkExampleCockroachdb:
+    container_name: ScalaSparkExampleCockroachdb
+    image: cockroachdb/cockroach:latest
+    volumes:
+      - './volumesData/ScalaSparkExampleCockroachdb:/cockroach/cockroach-data'
+    command: "start-single-node --insecure --logtostderr"
+    ports:
+      - "26257:26257"
+      - "9090:9090"
+    networks:
+      cockroachdb_net2:
+        aliases:
+          - node_1
+
+networks:
+  cockroachdb_net2:
+    driver: bridge

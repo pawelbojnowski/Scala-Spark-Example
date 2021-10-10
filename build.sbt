@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-RC1",
   "com.datastax.cassandra" % "cassandra-driver-core" % "3.0.0",
   "mysql" % "mysql-connector-java" % "5.1.49",
+  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
   ("org.apache.spark" %% "spark-streaming-kafka" % "1.6.0").
     exclude("org.spark-project.spark", "unused")
 )

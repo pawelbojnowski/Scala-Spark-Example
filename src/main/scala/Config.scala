@@ -1,39 +1,43 @@
 import org.apache.spark.sql.cassandra._
-import org.apache.spark.sql.{DataFrame, SQLContext}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 import java.util.Properties
 
 class Config {
 
-  //config
-  val conf = new SparkConf().setAppName("SparkCassandraExampleApp")
-  conf.set("spark.master", "local[*]")
-  conf.set("spark.app.name", "exampleApp")
 
-
-  //mysql
-  val url = "jdbc:mysql://127.0.01:3306/"
-  val properties = new Properties()
-  properties.put("user", "root")
-  properties.put("password", "root")
-
-
-  //cassandra
-  conf.set("spark.cassandra.connection.host", "127.0.0.1")
-  val sc = new SparkContext(conf)
-  val sqlContext = new SQLContext(sc)
+  def loadFromCockroach(keyspace: String, table: String): DataFrame = {
+    sparkSession
+      .getOrCreate().read.format("jdbc")
+      .option("url", "jdbc:postgresql://localhost:26257/defaultdb?user=root&password=rootPort=26257")
+      .option("dbtable", s"${keyspace}.${table}")
+      .option("driver", "org.postgresql.Driver")
+      .load()
+  }
 
   def loadFromMySql(keyspace: String, table: String): DataFrame = {
-
-    sqlContext.read.jdbc(url + keyspace, table, properties = properties)
+    val url = "jdbc:mysql://localhost:3306/"
+    val propertiesMySQL = new Properties()
+    propertiesMySQL.put("user", "root")
+    propertiesMySQL.put("password", "root")
+    sparkSession
+      .getOrCreate()
+      .read.jdbc(url + keyspace, table, properties = propertiesMySQL)
   }
 
   def loadFromCassandra(keyspace: String, table: String): DataFrame = {
-
-    sqlContext
+    sparkSession
+      .config("spark.cassandra.connection.host", "localhost")
+      .getOrCreate()
       .read
       .cassandraFormat(table, keyspace)
       .load()
+  }
+
+  private def sparkSession = {
+    SparkSession.builder()
+      .appName("Spark Cassandra Example App")
+      .config("spark.master", "local[*]")
+      .config("spark.app.name", "sparkCassandraExampleApp")
   }
 }
