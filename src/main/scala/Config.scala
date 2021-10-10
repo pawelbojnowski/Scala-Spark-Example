@@ -4,7 +4,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import java.util.Properties
 
-object Config {
+class Config {
 
   //config
   val conf = new SparkConf().setAppName("SparkCassandraExampleApp")

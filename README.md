@@ -4,7 +4,7 @@
 
 This application need connection to Cassandra and MariaDB.
 
-In directory ``run`` you can find script ``run.sh`` which creates docker containers with tables and some examples data
+In directory ``dbs`` you can find script ``create_dbs.sh`` which creates docker containers with tables and some examples data
 for both DBs;)
 
 ### Intellij

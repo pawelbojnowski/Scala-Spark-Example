@@ -1,8 +1,6 @@
 
 
-object SparkExample {
-
-  import Config._
+object SparkExample extends Config{
 
   def main(args: Array[String]): Unit = {
 
