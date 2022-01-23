@@ -10,7 +10,7 @@ done
 rm -rf ./volumesData
 
 #create docker
-docker-compose up -d
+docker-compose up -d --remove-orphans
 
 #setup import Cockroachdb
 docker exec -i $(docker ps -aqf name=ScalaSparkExampleCockroachdb) ./cockroach sql --insecure --database=defaultdb < initCockroachdb.sql
